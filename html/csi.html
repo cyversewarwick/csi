@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en" ng-app="CsiResults">
+  <head>
+    <meta charset="utf-8">
+    <title>CSI Results Analysis</title>
+    <link rel="stylesheet" href="css/pure.css">
+    <link rel="stylesheet" href="csi.css">
+    
+    <script type="text/javascript" src="js/angular.js"></script>
+    <script type="text/javascript" src="js/d3.js"></script>
+    
+    <script type="text/javascript" src="csi.js"></script>
+    <script type="text/javascript" src="results.json"></script>
+  </head>
+  <body ng-controller="CSI">
+    <div id="header">
+      <div class="pure-menu pure-menu-horizontal">
+	<ul class="pure-menu-list">
+          <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+            <a href="" id="menuFile" class="pure-menu-link">File</a>
+            <ul class="pure-menu-children">
+              <li class="pure-menu-item"><a href="" class="pure-menu-link" ng-click="doCytoscapeExport()">
+                Export to Cytoscape</a></li>
+            </ul>
+          </li>
+          <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+            <a href="" id="menuFile" class="pure-menu-link">Network</a>
+            <ul class="pure-menu-children">
+              <li class="pure-menu-item"><a href="" class="pure-menu-link" ng-click="resetNetwork('marginal')">Marginal</a></li>
+              <li class="pure-menu-item"><a href="" class="pure-menu-link" ng-click="resetNetwork('map')">MAP</a></li>
+            </ul>
+          </li>
+          <li class="pure-menu-item"><a href="" class="pure-menu-link" ng-click="showCitationInformation($event)">
+            Citation</a></li>
+          <li class="pure-menu-item"><a href="" class="pure-menu-link">Help</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="data-items">
+	Minimum Weight: <input type="number" min="0.0", max="1.0" step="0.1"
+			       ng-model="weightthresh">
+	<table class="pure-table" ng-controller="ItemSorter">
+	  <thead>
+	    <tr>
+	      <td>
+		<input type="checkbox" ng-model="$parent.defaultsel" ng-change="setSelection()">
+		<span ng-click="order('name')">Genes</span>
+	      </td>
+	      <td>
+		<abbr ng-click="order('nparents')"
+		      title="Number of Inferred Parent Genes">Prnt</abbr>
+	      </td>
+	      <td>
+		<abbr ng-click="order('nchildren')"
+		      title="Number of Inferred Child Genes">Chld</abbr>
+	      </td>
+	      <td>
+		<abbr ng-click="order('bestweight')"
+		      title="Weight Assigned to Best Parental Set">Fit</abbr>
+	      </td>
+	      <td><abbr ng-click="order('gpf')"
+			title="Standard Deviation of Gaussian-Process Function">GP-F</abbr></td>
+	      <td><abbr ng-click="order('gpl')"
+			title="Length-scale of Gaussian-Process Function">GP-L</abbr></td>
+	      <td><abbr ng-click="order('gpn')"
+			title="Standard Deviation of Residual Noise">GP-N</abbr></td>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr ng-repeat="item in items | orderBy : predicate">
+	      <td>
+		<label ng-mouseenter="$emit('overitem',item,true)"
+		       ng-mouseleave="$emit('overitem',item,false)">
+		  <input type="checkbox" ng-model="item.selected"
+			 ng-change="$emit('itemschanged')"> {{item.name}}
+		</label>
+                <abbr ng-click="showItemResults(item, $event)"
+                      title="Model Details…">[+]</abbr>
+	      </td>
+	      <td ng-mouseenter="$emit('overitems',itemParents(item),true)"
+		  ng-mouseleave="$emit('overitems',itemParents(item),false)"
+		  ng-click="showHideItems(itemParents(item))"
+		  ng-bind="item.nparents"></td>
+	      <td ng-mouseenter="$emit('overitems',itemChildren(item),true)"
+		  ng-mouseleave="$emit('overitems',itemChildren(item),false)"
+		  ng-click="showHideItems(itemChildren(item))"
+		  ng-bind="item.nchildren"></td>
+	      <td>{{item.bestweight | weight}}</td>
+	      <td>{{item.result.hyperparams[0] | hyperpar}}</td>
+	      <td>{{item.result.hyperparams[1] | hyperpar}}</td>
+	      <td>{{item.result.hyperparams[2] | hyperpar}}</td>
+	    </tr>
+	  </tbody>
+	</table>
+      </div><div id="graphpset"><div id="graph">
+      </div></div><div id="parentplots"></div></div>
+    <div id="itemresults" ng-style="itemresultsstyle" ng-click="hideItemResults()">
+      <table class="pure-table">
+	<thead>
+	  <tr>
+	    <td>Parental Set</td>
+	    <td>Weight</td>
+	  </tr>
+	</thead>
+	<tbody>
+          <tr ng-repeat="mod in itemresults.result.models">
+            <td ng-bind-html="mod.pset | parents : itemresults : networktype : weightthresh"></td>
+	    <td>{{mod.weight | longweight}}</td>
+	  </tr>
+	</tbody>
+      </table>
+    </div>
+    <div id="citation" ng-style="citationstyle">
+      <h1>Citation Information</h1>
+      <p><code>
+Penfold, C. A., & Wild, D. L. (2011). How to
+infer gene networks from expression profiles,
+revisited. Interface Focus, 1(6), 857-870.
+      </code></p>
+      <div>
+        <a target="_blank" href="https://dx.doi.org/10.1098/rsfs.2011.0053">doi:10.1098/rsfs.2011.0053</a> |
+        <a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/23226586">Pub Med</a> |
+        <a target="_blank" href="http://rsfs.royalsocietypublishing.org/content/1/6/857.short">Interface Focus</a>
+
+        <input style="float:right" type="button" value="Close" ng-click="hideCitationInformation()">
+      </div>
+    </div>
+    <div id="footer" style="padding: 1ex">
+      Visualisation of results from CSI model, please contact <a href="sam@samason.uk">Sam Mason</a> for technical support.
+    </div>
+  </body>
+</html>

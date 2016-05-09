@@ -1,0 +1,98 @@
+#data-items, #graphpset, #graph, #parental-set, #data {
+    vertical-align: top;
+}
+#data-items, #graphpset, #parental-set {
+    display: inline-block;
+}
+#data-items {
+    width: 30rem;
+    font: 12px sans-serif;
+    max-height: 35rem;
+    overflow-y:scroll;
+}
+#graphpset {
+    width: calc(100% - 30rem);
+    height: 35rem;
+}
+#graph {
+    height: 35rem;
+}
+#expdata, #parentplots {
+    min-height: 20rem;
+    font: 10px sans-serif;
+}
+
+#itemresults {
+    position: absolute;
+    font: 12px sans-serif;
+    background-color: white;
+    max-height: 35rem;
+    overflow-y: scroll;
+}
+
+#citation {
+    position: absolute;
+    font: 12px sans-serif;
+    background-color: white;
+    max-width: 30rem;
+    padding: 1ex;
+    border: 2px solid grey;
+    border-radius: 1ex;
+}
+
+.node {
+    visibility: hidden;
+}
+
+#arrow {
+    fill: crimson;
+}
+
+.iteminpset {
+    font-weight: bolder;
+}
+
+.link {
+    fill: none;
+    stroke: black;
+    visibility: hidden;
+}
+
+.selected  { visibility: visible; }
+.mouseover { visibility: visible; }
+
+.node.mouseover {
+    stroke: royalblue;
+    stroke-width: 1pt;
+    fill: white;
+}
+
+.node.mouseover.selected {
+    fill: black;
+    stroke-width: 2pt;
+}
+
+.link.mouseovertarget {
+    stroke: royalblue;
+}
+
+.link.mouseoverparent {
+    stroke: crimson;
+}
+
+.line {
+  fill: none;
+  stroke: #000;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.label {
+    font-size: 12px;
+    font-weight: bold;
+}
