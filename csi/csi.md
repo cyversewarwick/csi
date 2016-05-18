@@ -32,9 +32,9 @@ When evaluating parental set combinations, a limitation is put on up to how many
 
 ### Gaussian Process Prior
 
-**Default:** 10,0.1
+**Default:** 10;0.1
 
-Part of CSI is placing an assumption on how we expect the hyperparameter values to be distributed, and in [Penfold et al., 2011][penfold2011] the hyperparameters were assumed to be Gamma distributed with a shape parameter of 10 and a scale parameter of 0.1. If you wish to alter the shape/scale parameters of the gamma distribution, provide them as shape and scale with just a comma between them.
+Part of CSI is placing an assumption on how we expect the hyperparameter values to be distributed, and in [Penfold et al., 2011][penfold2011] the hyperparameters were assumed to be Gamma distributed with a shape parameter of 10 and a scale parameter of 0.1. If you wish to alter the shape/scale parameters of the gamma distribution, provide them as shape and scale with just a semicolon between them.
 
 ### Process Count
 
@@ -47,6 +47,10 @@ CSI features multiple levels of parallelisation, aiming to speed up the run time
 **Default:** 1e-5
 
 CSI's EM optimisation of the individual parent set fits sees a lot of computations of likelihoods, which is the computational bottleneck of the algorithm. If this option is provided, then some of the more suboptimal parent set combinations (whose probabilities constitute less than this fraction of the best parental set's probability) will be skipped to make the algorithm run quicker. Reducing this value will slightly improve result accuracy, at a computational cost. Increasing this value can lead to uninformative results as a high number of parental sets become dropped.
+
+### No Data Standardisation
+
+CSI fits are calibrated to normally distributed expression data with zero mean and unit variance. By default, CSI standardises the expression data it receives on a per-gene, per-condition basis to match this requirement. If you believe you have strong reason to not standardise the data automatically within the code, check this box.
 
 ### Weight Sampling
 

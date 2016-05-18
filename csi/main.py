@@ -30,7 +30,7 @@ def cmdparser(args):
         normalise=True,
         depth=2,
         depgenes=[],
-        gpprior='10,0.1')
+        gpprior='10;0.1')
 
     # define general parameters
     op.add_option('-v','--verbose',dest='verbose',action='count',
@@ -42,7 +42,9 @@ def cmdparser(args):
     op.add_option('--mp',dest='numprocs',type='int',
                   help="Number of CPU cores (worker processes) to use")
     op.add_option('--gpprior',dest='gpprior', metavar='PRIORS',
-                  help="Gaussian Process Hyperparameters, 'shape,scale'")
+                  help="Gaussian Process Hyperparameters, 'shape;scale'")
+    op.add_option('--nostandardise',dest='normalise', action='store_false',
+                  help="Don't normalise the data on input")
 
     # define output parameters
     op.add_option_group(out)
@@ -79,9 +81,9 @@ def parse_gp_hyperparam_priors(s):
             return np.array(m.groups(),dtype=float)
         raise ValueError("Unable to parse {0} as hyperparameter prior".format(repr(a)))
     # split the string into two
-    arr = s.split(',')
+    arr = s.split(';')
     if len(arr) != 2:
-        raise ValueError('Expecting only one comma in hyperparameters')
+        raise ValueError('Expecting only one semicolon in hyperparameters')
     # parse the two sides
     return (parse(arr[0]),
             parse(arr[1]))
@@ -161,6 +163,10 @@ def main(args=None):
     # levels are sorted, need to fix!)
     assert (inp.columns.is_monotonic_increasing)
     # not sure whether I can do anything similar for the rows
+    
+    #normalise the data
+    if op.normalise:
+        inp[:][:] = sp.stats.mstats.zscore(inp,axis=1,ddof=1)
 
     if op.verbose:
         logger.info("Genes: %s",
