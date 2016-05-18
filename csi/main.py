@@ -206,7 +206,7 @@ def main(args=None):
 
     if op.weighttrunc:
         val = float(op.weighttrunc)
-        if 0 < val < 1:
+        if not (0 < val < 1):
             sys.stderr.write("Error: The weight truncation must be between zero and one\n")
             sys.exit(1)
 
