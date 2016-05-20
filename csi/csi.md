@@ -48,9 +48,9 @@ CSI features multiple levels of parallelisation, aiming to speed up the run time
 
 CSI's EM optimisation of the individual parent set fits sees a lot of computations of likelihoods, which is the computational bottleneck of the algorithm. If this option is provided, then some of the more suboptimal parent set combinations (whose probabilities constitute less than this fraction of the best parental set's probability) will be skipped to make the algorithm run quicker. Reducing this value will slightly improve result accuracy, at a computational cost. Increasing this value can lead to uninformative results as a high number of parental sets become dropped.
 
-### No Data Standardisation
+### Data Normalisation
 
-CSI fits are calibrated to normally distributed expression data with zero mean and unit variance. By default, CSI standardises the expression data it receives on a per-gene, per-condition basis to match this requirement. If you believe you have strong reason to not standardise the data automatically within the code, check this box.
+CSI fits are calibrated to expression data with zero mean and unit variance. By default, CSI standardises the expression data it receives on a per-gene, per-condition basis to match this requirement. If you believe you have strong reason to not standardise the data automatically within the code, you can choose to merely center it, or perform no normalisation whatsoever and leave it as is in the input.
 
 ### Weight Sampling
 

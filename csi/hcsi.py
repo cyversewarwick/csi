@@ -34,7 +34,7 @@ def parse_args():
 	parser.add_argument('--Prior', dest='gpprior', type=str, default='10;0.1', help='CSI Gaussian Process prior, provided as \'shape;scale\' for a gamma distribution or \'uniform\' for a uniform distribution. Default: \'10;0.1\'')
 	parser.add_argument('--BetaPrior', dest='betaprior', type=str, default='1;1', help='hCSI temperature prior, provided as \'shape;scale\' for a gamma distribution. Default: \'1;1\'')
 	parser.add_argument('--SeedOffset', dest='offset', type=int, default=0, help='Shift the seeding (based on child gene row number in the CSV) by a fixed amount to get (slightly) different run results. Default: 0 (no offset)')
-	parser.add_argument('--NoStandardising', dest='standardise', action='store_false', help='Flag. If provided, the data will not be standardised on a per-gene, per-condition basis.')
+	parser.add_argument('--Normalise', dest='normalise', choices=['none','center','standardise'], default='standardise', help='Choice of normalisation - \'none\' to leave data as is, \'center\' to center, \'standardise\' to standardise. Default: \'standardise\'')
 	parser.add_argument('--Genes', dest='genes', default=None, nargs='+', help='Child gene set to evaluate, if you wish to only run hCSI on a subset of the available gene space. Provide as space delimited names matching the CSV file. Default: None (analyse the whole dataset)')
 	parser.add_argument('--Pool', dest='pool', type=int, default=1, help='Number of threads to open up for parallelising hCSI on a per-gene basis. Default: 1 (no parallelising)')
 	parser.add_argument('--LikelihoodPool', dest='likpool', default=None, type=int, help='Likelihood computation is the most resource-intensive part of hCSI. This option allows an additional level of parallelisation in likelihood computation, to speed up run times on resource-heavy local computational platforms. Default: None (no additional parallelisation level)')
@@ -191,8 +191,10 @@ class RandomVariableCondition(ag.RandomVariable):
 		numtemp = np.arange(len(colNames))
 		inp = csidata.iloc[:,numtemp[colNames==cond]]
 		#standardising
-		if standardise:
+		if standardise=='standardise':
 			inp[:][:] = sp.stats.mstats.zscore(inp,axis=1,ddof=1)
+		elif standardise=='center':
+			inp[:][:] = inp[:][:] - np.mean(inp[:][:],axis=1)[:,None]
 		#some processing stuff borrowed from the CSI code
 		assert (inp.columns.is_monotonic_increasing)
 		self.cc = csi.Csi(inp)
@@ -286,7 +288,7 @@ def runGibbs(gene_id, inp, gpprior, betaprior, args):
 	crv = []
 	conditions = np.unique([x[0] for x in inp.columns.values])
 	for cond in conditions:
-		crv.append(RandomVariableCondition(inp,cond,gene,gpprior,betaprior,args.depth,args.standardise))
+		crv.append(RandomVariableCondition(inp,cond,gene,gpprior,betaprior,args.depth,args.normalise))
 	gibbs = GibbsHCSI(crv,hnrv)
 	gibbs.sample(args.samples, args.verbose)
 	#ditch the burn-in

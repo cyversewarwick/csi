@@ -27,7 +27,7 @@ def cmdparser(args):
     op.set_usage("usage: %prog [options] FILE.csv")
     op.set_defaults(
         verbose=False,
-        normalise=True,
+        normalise='standardise',
         depth=2,
         depgenes=[],
         gpprior='10;0.1')
@@ -43,8 +43,9 @@ def cmdparser(args):
                   help="Number of CPU cores (worker processes) to use")
     op.add_option('--gpprior',dest='gpprior', metavar='PRIORS',
                   help="Gaussian Process Hyperparameters, 'shape;scale'")
-    op.add_option('--nostandardise',dest='normalise', action='store_false',
-                  help="Don't normalise the data on input")
+    op.add_option('--normalise',dest='normalise', type='choice',
+                  choices=['none','center','standardise'],
+                  help="How to normalise the data on input ('none', 'center', 'standardise')")
 
     # define output parameters
     op.add_option_group(out)
@@ -165,8 +166,10 @@ def main(args=None):
     # not sure whether I can do anything similar for the rows
     
     #normalise the data
-    if op.normalise:
+    if op.normalise == 'standardise':
         inp[:][:] = sp.stats.mstats.zscore(inp,axis=1,ddof=1)
+    elif op.normalise == 'center':
+        inp[:][:] = inp[:][:] - np.mean(inp[:][:],axis=1)[:,None]
 
     if op.verbose:
         logger.info("Genes: %s",
