@@ -32,5 +32,5 @@ RUN mkdir /scripts
 COPY csi/ /scripts/csi/
 COPY html/ /scripts/html/
 MAINTAINER Sam Mason <sam@samason.uk>
-ENTRYPOINT ["bash", "/scripts/csi/csi_wrapper.sh"]
+ENTRYPOINT ["bash", "/scripts/csi/csi_tarwrapper.sh"]
 CMD ["--help"]
