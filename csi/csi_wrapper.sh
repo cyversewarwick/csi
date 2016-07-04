@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 #run CSI
 python3 /scripts/csi/main.py --csv=csi_out.csv --hdf5=csi_out.h5 "${@:1}"

@@ -36,12 +36,6 @@ When evaluating parental set combinations, a limitation is put on up to how many
 
 Part of CSI is placing an assumption on how we expect the hyperparameter values to be distributed, and in [Penfold et al., 2011][penfold2011] the hyperparameters were assumed to be Gamma distributed with a shape parameter of 10 and a scale parameter of 0.1. If you wish to alter the shape/scale parameters of the gamma distribution, provide them as shape and scale with just a semicolon between them.
 
-### Process Count
-
-**Default:** 8
-
-CSI features multiple levels of parallelisation, aiming to speed up the run time of the algorithm. This parameter controls how many threads are opened, and matches the default allocation of an iPlant node.
-
 ### Weight Truncation
 
 **Default:** 1e-5

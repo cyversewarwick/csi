@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 #mark start
 sleep 5

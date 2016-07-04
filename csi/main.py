@@ -14,6 +14,8 @@ import numpy as np
 import scipy as sp
 import pandas as pd
 
+import multiprocessing as mp
+
 import csi
 
 logger = logging.getLogger('CSI')
@@ -29,6 +31,7 @@ def cmdparser(args):
         verbose=False,
         normalise='standardise',
         depth=2,
+        numprocs=0,
         depgenes=[],
         gpprior='10;0.1')
 
@@ -126,8 +129,12 @@ def main(args=None):
 
     numprocs = op.numprocs
     if numprocs is not None and numprocs < 1:
-        sys.stderr.write("Error: must have one or more worker process")
-        sys.exit(1)
+        #add automatic parallelisation
+        if numprocs==0:
+            numprocs = mp.cpu_count()
+        else:
+            sys.stderr.write("Error: can't have a negative worker process count")
+            sys.exit(1)
 
     if op.gpprior is None or op.gpprior == 'uniform':
         gpprior = None

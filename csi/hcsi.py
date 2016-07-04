@@ -36,7 +36,7 @@ def parse_args():
 	parser.add_argument('--SeedOffset', dest='offset', type=int, default=0, help='Shift the seeding (based on child gene row number in the CSV) by a fixed amount to get (slightly) different run results. Default: 0 (no offset)')
 	parser.add_argument('--Normalise', dest='normalise', choices=['none','center','standardise'], default='standardise', help='Choice of normalisation - \'none\' to leave data as is, \'center\' to center, \'standardise\' to standardise. Default: \'standardise\'')
 	parser.add_argument('--Genes', dest='genes', default=None, nargs='+', help='Child gene set to evaluate, if you wish to only run hCSI on a subset of the available gene space. Provide as space delimited names matching the CSV file. Default: None (analyse the whole dataset)')
-	parser.add_argument('--Pool', dest='pool', type=int, default=1, help='Number of threads to open up for parallelising hCSI on a per-gene basis. Default: 1 (no parallelising)')
+	parser.add_argument('--Pool', dest='pool', type=int, default=0, help='Number of threads to open up for parallelising hCSI on a per-gene basis. Default: 0 (automated parallelising)')
 	parser.add_argument('--LikelihoodPool', dest='likpool', default=None, type=int, help='Likelihood computation is the most resource-intensive part of hCSI. This option allows an additional level of parallelisation in likelihood computation, to speed up run times on resource-heavy local computational platforms. Default: None (no additional parallelisation level)')
 	parser.add_argument('--Samples', dest='samples', type=int, default=25000, help='Number of Gibbs updates to perform within hCSI. Default: 25,000')
 	parser.add_argument('--BurnIn', dest='burnin', type=int, default=2500, help='Number of initial Gibbs updates to discard as burn-in. Default: 2,500')
@@ -345,6 +345,9 @@ def main():
 	if args.depth < 1:
 		sys.stderr.write("Error: truncation depth must be greater than or equal to one")
 		sys.exit(1)
+	#assess parallelisation
+	if args.pool == 0:
+		args.pool = mp.cpu_count()
 	#parse priors
 	if args.gpprior is None or args.gpprior == 'uniform':
 		gpprior = None
