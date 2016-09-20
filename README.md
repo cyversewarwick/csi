@@ -68,4 +68,8 @@ The same as the above, but provided in .h5 format. Used for preparing the webapp
 
 A webapp, allowing for an interactive visualisation and tuning of the nodes/edges present in the final exported network model. Open by double clicking on `csi.html` after downloading the results to your machine. Control the edge probability threshold in the Minimum Weight field, and switch between MAP/marginal models under the Network tab. The network visualisation itself is interactive and can have the nodes dragged around and the network zoomed in/out on. Select/deselect genes by clicking on them in the gene list, and see the expression profile of its chosen parents in the plot box below the space allocated for the network graph. Once content with a model, export it to a GML under the File tab. **Using the webapp is not recommended if more than 50 genes were used in the inference, as the model may become too large for the webapp to handle and visualise in an informative manner. GMLs can also be obtained through the hCSI_MarginalThreshold app.**
 
+### `FullOutput.tar`
+
+The complete output of the analysis, archived into a single file for ease of downloading to your computer.
+
 [penfold2011]: http://rsfs.royalsocietypublishing.org/content/1/6/857.short

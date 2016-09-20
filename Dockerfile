@@ -21,6 +21,12 @@ RUN HDF5_DIR=/usr/lib/x86_64-linux-gnu/hdf5/serial/ pip install h5py
 RUN mkdir /scripts
 COPY csi/ /scripts/csi/
 COPY html/ /scripts/html/
+
+# grab the expression filter utility
+RUN apt-get -y install git
+RUN git clone https://github.com/cyversewarwick/expression_filter
+RUN cp /expression_filter/scripts/expression_filter.py /scripts/csi
+
 MAINTAINER Sam Mason <sam@samason.uk>
 ENTRYPOINT ["bash", "/scripts/csi/csi_tarwrapper.sh"]
 CMD ["--help"]
