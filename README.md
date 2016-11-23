@@ -14,7 +14,7 @@ CSI tries to explain the expression of a child gene by taking the expression of 
 
 ## Test Run
 
-If you want to take CSI out for a spin without using your own data, this can be done with the aid of one of the 10-gene synthetic networks originally used in the CSI and hCSI publications. The dataset to be used on input can be found at `ktpolanski/hcsi_testdata/dream4_5.csv` under Community Data. Leave all the parameter values as defaults.
+If you want to take CSI out for a spin without using your own data, this can be done with the aid of one of the 10-gene synthetic networks originally used in the CSI and hCSI publications. The dataset to be used on input can be found at `cyverseuk/hcsi_testdata/dream4_5.csv` under Community Data. Leave all the parameter values as defaults.
 
 ## Input in Detail
 
@@ -22,7 +22,7 @@ If you want to take CSI out for a spin without using your own data, this can be 
 
 ### Gene Expression CSV
 
-**Obligatory input.** Comma-delimited file, with expression data ordered to have genes as rows and time points as columns. In terms of headers, the first column should contain gene IDs, the first row should contain replicate names (repeated for each time point part of the replicate), and the second row should contain the corresponding time of the time point in that replicate. For reference on formatting, consult `ktpolanski/hcsi_testdata/dream4_5.csv` under Community Data. You can use multiple conditions on input, but CSI will treat them as replicates and not individual conditions, subsequently attempting to infer a joint regulatory model across all of the provided data.
+**Obligatory input.** Comma-delimited file, with expression data ordered to have genes as rows and time points as columns. In terms of headers, the first column should contain gene IDs, the first row should contain replicate names (repeated for each time point part of the replicate), and the second row should contain the corresponding time of the time point in that replicate. For reference on formatting, consult `cyverseuk/hcsi_testdata/dream4_5.csv` under Community Data. You can use multiple conditions on input, but CSI will treat them as replicates and not individual conditions, subsequently attempting to infer a joint regulatory model across all of the provided data.
 
 ### Parental Set Depth
 
