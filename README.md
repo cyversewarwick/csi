@@ -14,7 +14,7 @@ CSI tries to explain the expression of a child gene by taking the expression of 
 
 ## Test Run
 
-If you want to take CSI out for a spin without using your own data, this can be done with the aid of one of the 10-gene synthetic networks originally used in the CSI and hCSI publications. The dataset to be used on input can be found at `cyverseuk/hcsi_testdata/dream4_5.csv` under Community Data. Leave all the parameter values as defaults.
+If you want to take CSI out for a spin without using your own data, this can be done with the aid of one of the 10-gene synthetic networks originally used in the CSI and hCSI publications. The dataset to be used on input can be found at `cyverseuk/csi_testdata/dream4_5.csv` under Community Data. Leave all the parameter values as defaults.
 
 ## Input in Detail
 
@@ -22,7 +22,7 @@ If you want to take CSI out for a spin without using your own data, this can be 
 
 ### Gene Expression CSV
 
-**Obligatory input.** Comma-delimited file, with expression data ordered to have genes as rows and time points as columns. In terms of headers, the first column should contain gene IDs, the first row should contain replicate names (repeated for each time point part of the replicate), and the second row should contain the corresponding time of the time point in that replicate. For reference on formatting, consult `cyverseuk/hcsi_testdata/dream4_5.csv` under Community Data. You can use multiple conditions on input, but CSI will treat them as replicates and not individual conditions, subsequently attempting to infer a joint regulatory model across all of the provided data.
+**Obligatory input.** Comma-delimited file, with expression data ordered to have genes as rows and time points as columns. In terms of headers, the first column should contain gene IDs, the first row should contain replicate names (repeated for each time point part of the replicate), and the second row should contain the corresponding time of the time point in that replicate. For reference on formatting, consult `cyverseuk/csi_testdata/dream4_5.csv` under Community Data. You can use multiple conditions on input, but CSI will treat them as replicates and not individual conditions, subsequently attempting to infer a joint regulatory model across all of the provided data.
 
 ### Parental Set Depth
 
@@ -41,6 +41,10 @@ Part of CSI is placing an assumption on how we expect the hyperparameter values 
 **Default:** 1e-5
 
 CSI's EM optimisation of the individual parent set fits sees a lot of computations of likelihoods, which is the computational bottleneck of the algorithm. If this option is provided, then some of the more suboptimal parent set combinations (whose probabilities constitute less than this fraction of the best parental set's probability) will be skipped to make the algorithm run quicker. Reducing this value will slightly improve result accuracy, at a computational cost. Increasing this value can lead to uninformative results as a high number of parental sets become dropped.
+
+### Transcription Factor List
+
+By default, CSI treats all the genes provided on input as transcription factors and identifies a network of interactions between them. Every gene is allowed to be both a parent and a child. However, in some specific use cases, a user may want to model the influence of transcription factors on very relevant downstream genes which are not transcription factors themselves. As such, allowing them as parents in the modelling would be contradictory with their biological nature. Providing a list of transcription factors, one line per gene ID (refer to `cyverseuk/csi_testdata/tflist.txt` under Community Data), will tell CSI which of the genes it's allowed to use as parents and which are only to be used as children. Computational constraints apply as always, be very selective with your downstream targets.
 
 ### Data Normalisation
 
