@@ -14,7 +14,7 @@ import gp
 import logging
 logger = logging.getLogger('CSI')
 
-def parentalSets(items, item, depth):
+def parentalSets(items, item, depth, tfs=None):
     """Iterate over all "Parental Sets".
 
     A parental set is a list of regulators/transcription factors for a
@@ -22,6 +22,11 @@ def parentalSets(items, item, depth):
     subset of items up to a given depth that does not include the
     item.
     """
+
+    # filter to TFs if needed
+    if tfs is not None:
+        # duplicate list to avoid modifying callers state
+        items = list(tfs)
 
     # exclude the target if needed
     if item in items:
@@ -333,10 +338,11 @@ class CsiRep(object):
 
 class Csi(object):
     "Perform CSI analysis on the provided data"
-    def __init__(self, data):
+    def __init__(self, data, tfs=None):
         self.data = data
         self._items = data.index.tolist()
         self._itemmap = dict((b,a) for (a,b) in enumerate(self._items))
+        self.tfs = tfs
 
         n = [a for a,b in data.columns.values]
         ix = np.flatnonzero(np.array([a==b for a,b in zip(n, n[1:])]))
@@ -364,7 +370,7 @@ class Csi(object):
 
     def allParents(self, item, depth):
         "Utility function to calculate the parental set of the given item"
-        return list(parentalSets(self._items, item, depth))
+        return list(parentalSets(self._items, item, depth, self.tfs))
 
     def getEm(self):
         "For getting at a MAP estimate via expectation-maximisation."

@@ -33,6 +33,7 @@ def cmdparser(args):
         depth=2,
         numprocs=0,
         depgenes=[],
+        tflist=None,
         gpprior='10;0.1')
 
     # define general parameters
@@ -49,6 +50,8 @@ def cmdparser(args):
     op.add_option('--normalise',dest='normalise', type='choice',
                   choices=['none','center','standardise'],
                   help="How to normalise the data on input ('none', 'center', 'standardise')")
+    op.add_option('--tflist',dest='tflist', metavar='FILE',
+                  help="A list of TF IDs, one line per TF, to constrain the parental sets to")
 
     # define output parameters
     op.add_option_group(out)
@@ -203,8 +206,22 @@ def main(args=None):
             sys.exit(1)
 
     # TODO: how does the user specify the parental set?
+    if op.tflist is not None:
+        with open(op.tflist,'r') as fid:
+            tfs = fid.readlines()
+        #lose the new line symbol at the end
+        tfs = [x.rstrip() for x in tfs]
+        missing = np.setdiff1d(tfs, inp.index)
+        if len(missing) > 0:
+            sys.stderr.write("Error: The following transcription factors were not found: {missing}\n".format(
+                missing=', '.join(missing)))
+            sys.exit(1)
+    else:
+        #assume everything is TFs
+        logger.debug("No transcription factor list specified, assuming all")
+        tfs = list(inp.index) 
 
-    cc = csi.Csi(inp)
+    cc = csi.Csi(inp, tfs)
     em = cc.getEm()
 
     if gpprior:
